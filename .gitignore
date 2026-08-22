@@ -1,0 +1,12 @@
+# Segredos — nunca commitar
+.env
+
+# Artefatos de ferramentas Node (ex.: `npx skills add`)
+node_modules/
+package-lock.json
+
+# SO
+.DS_Store
+
+# Backups criados pelo bootstrap ao substituir arquivo existente por symlink
+*.bak

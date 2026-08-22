@@ -1,0 +1,104 @@
+{
+  "$comment": "Manifesto canônico de MCP servers, plugins e skills usados neste workstation. Fonte de verdade humana e para agentes: ao adicionar uma ferramenta nova, crie a entrada aqui primeiro e depois reflita em scripts/setup-*.sh e na tabela do README.",
+  "updated": "2026-08-22",
+  "mcpServers": [
+    {
+      "name": "context7",
+      "description": "Documentação atualizada de libs/frameworks/SDKs sob demanda",
+      "source": "https://context7.com/",
+      "transport": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "auth": "none",
+      "tools": {
+        "claude-code": { "method": "plugin", "ref": "context7@claude-plugins-official", "status": "installed" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.context7", "status": "new" },
+        "agy": { "method": "cli", "cmd": "agy mcp add context7 --type http https://mcp.context7.com/mcp", "status": "new" },
+        "codex": { "method": "cli", "cmd": "codex mcp add context7 --url https://mcp.context7.com/mcp", "status": "new" }
+      }
+    },
+    {
+      "name": "github",
+      "description": "GitHub MCP server oficial — issues, PRs, repos, code search",
+      "source": "https://github.com/github/github-mcp-server",
+      "transport": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "auth": "oauth",
+      "tools": {
+        "claude-code": { "method": "cli", "cmd": "claude mcp add --transport http -s user github https://api.githubcopilot.com/mcp", "status": "installed" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.github", "note": "migrado de PAT (header Authorization) para oauth:true — validar login na primeira execução", "status": "changed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add --type http github https://api.githubcopilot.com/mcp", "status": "new" },
+        "codex": { "method": "cli", "cmd": "codex mcp add github --url https://api.githubcopilot.com/mcp && codex mcp login github", "status": "new" }
+      }
+    },
+    {
+      "name": "notion",
+      "description": "Notion MCP server oficial — busca, páginas, databases",
+      "source": "https://mcp.notion.com/mcp",
+      "transport": "http",
+      "url": "https://mcp.notion.com/mcp",
+      "auth": "oauth",
+      "tools": {
+        "claude-code": { "method": "cli", "cmd": "claude mcp add --transport http -s user notion https://mcp.notion.com/mcp", "status": "installed" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.notion", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add --type http notion https://mcp.notion.com/mcp", "status": "new" },
+        "codex": { "method": "cli", "cmd": "codex mcp add notion --url https://mcp.notion.com/mcp && codex mcp login notion", "status": "new" }
+      },
+      "note": "Não estava na lista original desta rodada; mantido como carry-over do setup anterior."
+    },
+    {
+      "name": "playwright",
+      "description": "Automação de browser via Playwright (oficial Microsoft)",
+      "source": "https://github.com/microsoft/playwright-mcp",
+      "transport": "stdio",
+      "command": ["npx", "@playwright/mcp@latest"],
+      "auth": "none",
+      "tools": {
+        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user playwright -- npx @playwright/mcp@latest", "status": "new" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.playwright", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add playwright npx @playwright/mcp@latest", "status": "new" },
+        "codex": { "method": "cli", "cmd": "codex mcp add playwright -- npx @playwright/mcp@latest", "status": "new" }
+      }
+    },
+    {
+      "name": "chrome-devtools",
+      "description": "Controle e inspeção de Chrome ao vivo — performance, console, network",
+      "source": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "transport": "stdio",
+      "command": ["npx", "chrome-devtools-mcp@latest"],
+      "auth": "none",
+      "prerequisites": ["Google Chrome instalado (versão estável atual ou mais nova)"],
+      "tools": {
+        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user chrome-devtools -- npx chrome-devtools-mcp@latest", "status": "new" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.chrome-devtools", "status": "new" },
+        "agy": { "method": "cli", "cmd": "agy mcp add chrome-devtools npx chrome-devtools-mcp@latest", "status": "new" },
+        "codex": { "method": "cli", "cmd": "codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest", "status": "new" }
+      }
+    }
+  ],
+  "pluginsAndSkills": [
+    {
+      "name": "superpowers",
+      "description": "Framework de skills multi-harness: brainstorming, TDD, debugging sistemático, planos, code review, git worktrees",
+      "source": "https://github.com/obra/superpowers",
+      "tools": {
+        "claude-code": { "method": "plugin", "ref": "superpowers@claude-plugins-official", "status": "installed" },
+        "opencode": { "method": "config", "ref": "superpowers@git+https://github.com/obra/superpowers.git", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy plugin import claude", "status": "validate", "note": "sem manifesto .antigravity-plugin dedicado upstream; fallback: clonar o repo e `agy plugin install <dir>`" },
+        "codex": { "method": "cli", "cmd": "codex plugin marketplace add superpowers https://github.com/obra/superpowers && codex plugin add superpowers@superpowers", "status": "validate", "note": "sintaxe exata de `plugin marketplace add` para repo git de terceiro não confirmada" }
+      }
+    },
+    {
+      "name": "grill-me",
+      "description": "Skill do Matt Pocock para 'grelhar' uma ideia/spec com perguntas antes de implementar",
+      "source": "https://github.com/mattpocock/skills",
+      "install": "npx skills@latest add mattpocock/skills --skill grill-me -y (nota: use espaço antes do nome da skill, não '='; em modo agente '--skill=grill-me' é ignorado e instala as 36 skills do pacote)",
+      "note": "grill-me é um atalho ('Call the Skill tool with \"grilling\"') — depende da skill 'grilling', instalada junto. Vendorizadas em .agents/skills/ (convenção cross-tool do próprio instalador) + skills-lock.json na raiz pra permitir `npx skills update`.",
+      "tools": {
+        "claude-code": { "method": "file", "path": ".agents/skills/{grill-me,grilling} -> ~/.claude/skills/", "status": "installed" },
+        "codex": { "method": "file", "path": ".agents/skills/{grill-me,grilling} -> ~/.codex/skills/", "status": "validate" },
+        "opencode": { "method": "universal", "note": "instalador declara suporte 'universal' (lê .agents/skills/ direto), mas mecanismo de descoberta fora deste repositório não foi verificado", "status": "unverified" },
+        "agy": { "method": "universal", "note": "instalador declara suporte 'universal' (Antigravity + Antigravity CLI), mecanismo de descoberta não verificado", "status": "unverified" }
+      }
+    }
+  ]
+}
