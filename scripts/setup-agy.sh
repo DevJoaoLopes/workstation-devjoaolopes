@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Configura o agy (Antigravity CLI) a partir deste repositório.
 #
-# Configura MCP servers, plugins e a statusline personalizada.
+# Configura MCP servers e plugins.
 # É idempotente (reexecutável sem efeitos colaterais indesejados).
 set -euo pipefail
 
@@ -31,33 +31,7 @@ fi
 
 try "mcp chrome-devtools" agy mcp add chrome-devtools npx -y chrome-devtools-mcp@latest
 
-# 2. Statusline
-statusline_script="$REPO_ROOT/scripts/statusline.sh"
-chmod +x "$statusline_script" "$REPO_ROOT/scripts/statusline.py" 2>/dev/null || true
-settings_file="$HOME/.gemini/antigravity-cli/settings.json"
-if [ -d "$HOME/.gemini/antigravity-cli" ] || [ -f "$settings_file" ]; then
-  mkdir -p "$(dirname "$settings_file")"
-  python3 -c '
-import json, os, sys
-path = os.path.expanduser("~/.gemini/antigravity-cli/settings.json")
-data = {}
-if os.path.exists(path):
-    try:
-        with open(path, "r") as f:
-            data = json.load(f)
-    except Exception:
-        pass
-data["statusLine"] = {
-    "type": "command",
-    "command": sys.argv[1],
-    "enabled": True
-}
-with open(path, "w") as f:
-    json.dump(data, f, indent=2)
-' "$statusline_script" 2>/dev/null && log "statusline personalizada configurada no agy" || warn "não foi possível configurar statusline automaticamente"
-fi
-
-# 3. Superpowers: experimental
+# 2. Superpowers: experimental
 warn "superpowers no agy é experimental — tentando 'agy plugin import claude'"
 try "plugin import claude (superpowers)" agy plugin import claude
 

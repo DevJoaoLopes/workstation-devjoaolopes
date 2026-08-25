@@ -1,161 +1,224 @@
 <!-- markdownlint-disable MD033 -->
-# workstation-devjoaolopes
+<div align="center">
 
-Configuração pessoal de ferramentas de IA para desenvolvimento — MCPs,
-plugins e skills — versionada e reprodutível em qualquer máquina.
+```text
+  ██████╗ ██████╗  ██████╗     ███████╗████████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+ ██╔═══██╗██╔══██╗██╔═══██╗    ██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+ ██║   ██║██████╔╝██║   ██║    ███████╗   ██║   ███████║   ██║   ██║██║   ██║██╔██╗ ██║
+ ██║   ██║██╔══██╗██║▄▄ ██║    ╚════██║   ██║   ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+ ╚██████╔╝██║  ██║╚██████╔╝    ███████║   ██║   ██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+  ╚═════╝ ╚═╝  ╚═╝ ╚══▀▀═╝     ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+```
 
-Cobre quatro ferramentas:
+### ⚡ Estação de Trabalho e Orquestrador de Ferramentas de IA (V0)
+**Configurações unificadas, reprodutíveis e versionadas de MCPs, Plugins e Skills para Engenheiros de IA**
 
-- **[Claude Code](https://claude.com/claude-code)**
-- **[opencode](https://opencode.ai)**
-- **agy** (Antigravity CLI, da Google)
-- **[Codex CLI](https://github.com/openai/codex)** (OpenAI)
+---
 
-## Por quê
+[![Versão](https://img.shields.io/badge/versão-v0.1.0--alpha-blue.svg?style=for-the-badge)](https://github.com/DevJoaoLopes/workstation-devjoaolopes)
+[![Licença: MIT](https://img.shields.io/badge/Licença-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/DevJoaoLopes/workstation-devjoaolopes/ci.yml?branch=main&label=CI&style=for-the-badge)](https://github.com/DevJoaoLopes/workstation-devjoaolopes/actions)
+[![Plataformas](https://img.shields.io/badge/plataforma-macOS%20%7C%20Linux-lightgrey.svg?style=for-the-badge)]()
+[![Ferramentas](https://img.shields.io/badge/CLIs-Claude%20Code%20%7C%20opencode%20%7C%20AGY%20%7C%20Codex-purple.svg?style=for-the-badge)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
 
-Cada uma dessas ferramentas guarda configuração global espalhada pelo
-`$HOME` (`~/.claude`, `~/.config/opencode`, `~/.gemini`, `~/.codex`), em
-formatos diferentes, com CLIs diferentes. Este repositório existe pra que
-numa máquina zerada — ou pra qualquer outro dev que queira o mesmo ponto de
-partida — dê pra reconstruir o mesmo setup com um comando, em vez de lembrar
-de memória o que foi instalado onde.
+[Visão Geral](#-visão-geral) •
+[Funcionalidades](#-funcionalidades) •
+[Arquitetura](#-arquitetura) •
+[Quickstart](#-quickstart-numa-máquina-nova) •
+[Inventário de MCPs](#-inventário-de-ferramentas) •
+[Diagnóstico](#-diagnóstico-do-ambiente) •
+[Docs](#-documentação-completa)
 
-## Estrutura
+---
+
+</div>
+
+## 📖 Visão Geral
+
+Cada ferramenta e CLI de IA moderna guarda suas configurações espalhadas em locais diferentes do `$HOME` (`~/.claude`, `~/.config/opencode`, `~/.gemini`, `~/.codex`), usando sintaxes distintas e marketplaces proprietários.
+
+O **`workstation-devjoaolopes`** resolve essa fragmentação através de uma arquitetura orientada a manifesto:
+- **Zero Configuração Manual**: Em uma máquina zerada ou recém-formatada, execute um único comando e tenha todos os seus MCPs, plugins e skills sincronizados.
+- **Multi-Harness**: Suporte unificado para **[Claude Code](https://claude.com/claude-code)**, **[opencode](https://opencode.ai)**, **Antigravity CLI (`agy`)** da Google e **[Codex CLI](https://github.com/openai/codex)** da OpenAI.
+- **Manifesto Canônico (`mcps-generation.json`)**: Fonte única da verdade sobre quais ferramentas existem e como são registradas em cada CLI.
+- **Segurança e Idempotência**: Nenhum segredo é commitado; backups automáticos (`.bak`) protegem arquivos pré-existentes.
+
+---
+
+## ✨ Funcionalidades
+
+- 🧩 **5 MCP Servers Integrados de Alta Performance**: Documentação viva ([Context7](https://context7.com/)), Gestão de Repositórios ([GitHub](https://github.com/modelcontextprotocol/servers)), Bases de Conhecimento ([Notion](https://mcp.notion.com/mcp)), Automação Web ([Playwright](https://github.com/microsoft/playwright-mcp)) e Depuração ao Vivo ([Chrome DevTools](https://github.com/ChromeDevTools/chrome-devtools-mcp)).
+- 🧠 **Frameworks de Skills Avançadas**: Framework metódico de engenharia [Superpowers](https://github.com/obra/superpowers) (TDD, brainstorming, debugging, code review) e [Grill-me / Grilling](https://github.com/mattpocock/skills) (entrevistas socráticas para estressar ideias antes do código).
+- 🩺 **Diagnóstico Integrado (`make doctor`)**: Script automatizado para auditar Node.js, Python, Git, permissões, autenticação GitHub e status dos symlinks.
+- 🔄 **Symlinks Seguros com Backup Atômico**: Se um arquivo real existir no destino, o instalador cria um `.bak` seguro antes de linkar.
+
+---
+
+## 🏛️ Arquitetura
+
+```mermaid
+graph TD
+    A["mcps-generation.json<br><i>(Manifesto Canônico)</i>"] --> B["./scripts/bootstrap.sh<br><i>(Orquestrador Central)</i>"]
+    
+    B --> C["setup-claude.sh"]
+    B --> D["setup-opencode.sh"]
+    B --> E["setup-agy.sh"]
+    B --> F["setup-codex.sh"]
+    
+    C --> G["~/.claude/<br>• settings.json<br>• MCPs, Plugins & Skills"]
+    D --> H["~/.config/opencode/<br>• opencode.json<br>• MCPs declarativos<br>• Plugins Git"]
+    E --> I["~/.gemini/antigravity-cli/<br>• MCPs HTTP & Stdio"]
+    F --> J["~/.codex/<br>• MCPs registrados<br>• Skills universais"]
+```
+
+---
+
+## ⚡ Quickstart numa Máquina Nova
+
+### 1. Pré-requisitos Básicos
+Certifique-se de ter instalado:
+- **Git**
+- **Node.js** (>= 18) e **npm**
+- **Python 3**
+- Pelo menos uma das CLIs de IA:
+  - Claude Code: `npm install -g @anthropic-ai/claude-code`
+  - opencode: veja [opencode.ai](https://opencode.ai)
+  - Antigravity CLI (`agy`): Google Antigravity
+  - Codex CLI: `npm install -g @openai/codex`
+
+### 2. Clonar e Instalar
+```bash
+# 1. Clone o repositório
+git clone https://github.com/DevJoaoLopes/workstation-devjoaolopes.git
+cd workstation-devjoaolopes
+
+# 2. (Opcional) Crie o arquivo .env para tokens manuais
+cp .env.example .env
+
+# 3. Execute o bootstrap
+./scripts/bootstrap.sh
+# ou via make:
+make setup
+```
+
+> [!TIP]
+> O script `bootstrap.sh` detecta automaticamente quais CLIs estão instaladas no seu `PATH` e configura apenas as ferramentas encontradas. Você não precisa ter todas instaladas.
+
+---
+
+## 🩺 Diagnóstico do Ambiente
+
+Para checar o status de todas as dependências, autenticações e symlinks:
+
+```bash
+make doctor
+```
+
+Exemplo de saída:
+```text
+🩺 Diagnóstico do Workstation de IA (DevJoaoLopes V0)
+Verificando pré-requisitos, CLIs instaladas e symlinks...
+
+=== 1. Sistema Operacional & Ambiente ===
+  ✔ Git: git version 2.52.0
+  ✔ Python 3: Python 3.14.3
+  ✔ Node.js: v24.18.1 (>= v18)
+  ✔ npm / npx: v11.16.0
+
+=== 2. Autenticação & Segredos ===
+  ✔ GitHub CLI (gh): instalado e autenticado
+
+=== 3. Pré-requisitos de MCPs ===
+  ✔ Google Chrome detectado (necessário para chrome-devtools MCP)
+
+=== 4. CLIs de Inteligência Artificial ===
+  ✔ Claude Code (claude): instalado
+  ✔ opencode: instalado
+  ✔ Antigravity CLI (agy): instalado
+```
+
+---
+
+## 📦 Inventário de Ferramentas
+
+| Recurso | Tipo | O que faz | Claude Code | opencode | agy | Codex CLI |
+|---|---|---|:---:|:---:|:---:|:---:|
+| **[context7](https://context7.com/)** | `MCP (HTTP)` | Documentação atualizada de libs e frameworks sob demanda | `plugin` | `config` | `mcp add` | `mcp add` |
+| **[@modelcontextprotocol/server-github](https://github.com/modelcontextprotocol/servers)** | `MCP (stdio)` | Issues, PRs, repositórios e busca de código | `mcp add` | `config` | `mcp add` | `mcp add` |
+| **[notion](https://mcp.notion.com/mcp)** | `MCP (HTTP)` | Busca e gestão de páginas e databases no Notion | `mcp add` *(OAuth)* | `config` | `mcp add` *(OAuth)* | `mcp add` *(OAuth)* |
+| **[playwright](https://github.com/microsoft/playwright-mcp)** | `MCP (stdio)` | Automação e navegação de browser (headless e extensão) | `mcp add` | `config` | `mcp add` | `mcp add` |
+| **[chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)** | `MCP (stdio)` | Inspeção, performance e console do Chrome ao vivo | `mcp add` | `config` | `mcp add` | `mcp add` |
+| **[superpowers](https://github.com/obra/superpowers)** | `Plugin / Skills` | Framework de skills: brainstorming, TDD, debugging, planos | `plugin` | `plugin (git)` | `plugin import` ⚠️ | `marketplace` ⚠️ |
+| **[grill-me / grilling](https://github.com/mattpocock/skills)** | `Skill (Universal)` | Entrevistas socráticas para validar planos antes de codificar | `symlink` | `universal` | `universal` | `symlink` |
+
+> [!NOTE]
+> ⚠️ = Suporte experimental em validação contínua. Consulte [`docs/mcp-catalog.md`](docs/mcp-catalog.md) para detalhes.
+
+---
+
+## 🔐 Gestão de Segredos e Autenticação
+
+- **GitHub Token**: Os scripts obtêm o token automaticamente a partir da sessão ativa do GitHub CLI (`gh auth token`). Se não usar `gh`, informe `GITHUB_PERSONAL_ACCESS_TOKEN` no `.env`.
+- **Playwright Extension**: Caso queira conectar o Playwright à janela ativa do seu navegador existente, configure `PLAYWRIGHT_MCP_EXTENSION_TOKEN` no `.env`.
+- **Notion (OAuth)**: O login OAuth é interativo e abre o navegador na primeira vez que a ferramenta for usada em cada CLI.
+- **Zero Segredos Versionados**: O arquivo `.env` está protegido no `.gitignore` e as configurações usam interpolação dinâmica (`{env:...}`).
+
+---
+
+## 📂 Estrutura do Repositório
 
 ```
 .
-├── mcps-generation.json          # manifesto canônico: todo MCP/plugin/skill, o que é e como é instalado em cada ferramenta
-├── .env.example                  # variáveis necessárias (só onde a ferramenta não suporta OAuth)
-├── home/                         # espelha $HOME — cada arquivo aqui é symlinkado 1:1 pro lugar real
+├── mcps-generation.json          # Manifesto canônico de MCPs, plugins e skills
+├── .env.example                  # Modelo de variáveis de ambiente
+├── Makefile                      # Comandos úteis: make setup, make doctor, make check
+├── home/                         # Espelho do $HOME (symlinks não destrutivos)
 │   ├── .claude/settings.json     # → ~/.claude/settings.json
-│   └── .config/opencode/opencode.json  # → ~/.config/opencode/opencode.json
-├── .agents/skills/                # skills avulsas (mattpocock/skills) — formato "universal" cross-tool
-│   ├── grill-me/                  # atalho que chama "grilling"
-│   └── grilling/                  # a skill de verdade
-├── skills-lock.json               # rastreia origem/versão das skills acima, pra `npx skills update`
-├── docs/superpowers/specs/        # decisões de arquitetura registradas
+│   └── .config/opencode/         # → ~/.config/opencode/opencode.json
+├── .agents/skills/               # Skills universais versionadas (grill-me, grilling)
+├── skills-lock.json              # Lockfile de versão das skills
+├── docs/                         # Documentação técnica detalhada
+│   ├── architecture.md           # Arquitetura e fluxo do orquestrador
+│   ├── mcp-catalog.md            # Catálogo técnico de cada MCP e Skill
+│   └── troubleshooting.md        # Guia de solução de problemas e FAQ
 └── scripts/
-    ├── bootstrap.sh                # rode este — detecta o que está instalado e chama os setups abaixo
-    ├── setup-claude.sh
-    ├── setup-opencode.sh
-    ├── setup-agy.sh
-    └── setup-codex.sh
+    ├── bootstrap.sh              # Ponto de entrada do bootstrap
+    ├── doctor.sh                 # Diagnóstico de ambiente e ferramentas
+    ├── setup-claude.sh           # Setup Claude Code
+    ├── setup-opencode.sh         # Setup opencode
+    ├── setup-agy.sh              # Setup Antigravity CLI
+    ├── setup-codex.sh            # Setup Codex CLI
+    └── lib/common.sh             # Helpers compartilhados de symlink e log
 ```
 
-`.claude/settings.local.json` na raiz do repo é uma coisa **diferente**: é a
-config de projeto deste próprio repositório (permissões do Claude Code
-quando você trabalha aqui dentro), não faz parte do que é replicado pra
-outras máquinas.
+---
 
-## Quick start numa máquina nova
+## 📚 Documentação Completa
 
-1. Instale as ferramentas que for usar (pule as que não quiser):
-   - Claude Code: `npm install -g @anthropic-ai/claude-code`
-   - opencode: veja [opencode.ai](https://opencode.ai)
-   - agy: CLI do Antigravity (Google)
-   - Codex CLI: `npm install -g @openai/codex` (**não** o pacote `codex` sem
-     escopo — é um projeto antigo não relacionado)
-2. Clone este repositório.
-3. `cp .env.example .env` e preencha só se algo pedir (ver [Secrets](#secrets)).
-4. Rode:
+Para aprofundar-se em aspectos específicos do projeto:
 
-   ```bash
-   ./scripts/bootstrap.sh
-   ```
+- 🏛️ **[Arquitetura e Decisões de Design](docs/architecture.md)**
+- 📦 **[Catálogo Completo de MCPs e Skills](docs/mcp-catalog.md)**
+- 🔧 **[Guia de Solução de Problemas (Troubleshooting)](docs/troubleshooting.md)**
+- 🤝 **[Guia de Contribuição (CONTRIBUTING.md)](CONTRIBUTING.md)**
+- 🛡️ **[Política de Segurança (SECURITY.md)](SECURITY.md)**
+- ⚖️ **[Licença MIT](LICENSE)**
 
-   O script detecta quais das 4 CLIs existem no `PATH` e configura só essas
-   — não precisa ter todas instaladas.
-5. MCPs com OAuth (`github`, `notion`) abrem o navegador pra login na
-   primeira vez que forem chamados dentro de uma sessão — isso não é
-   automatizável, é uma ação manual de cada máquina.
-6. Conectores de conta do Claude.ai (Gmail, Google Drive, Google Calendar,
-   Wispr Flow) não são arquivo — não tem o que versionar. Conecte em
-   [claude.ai/settings/connectors](https://claude.ai/settings/connectors) se
-   quiser esses também.
+---
 
-O `bootstrap.sh` é seguro de rodar mais de uma vez: `mcp add` em algo que já
-existe apenas avisa e segue, `plugin install` em algo já instalado é no-op, e
-os symlinks fazem backup (`.bak`) de qualquer arquivo real que encontrarem no
-caminho de destino antes de substituir.
+## 🤝 Como Contribuir
 
-## Inventário
+Contribuições são muito bem-vindas! Se você deseja adicionar um novo MCP Server, sugerir melhorias nos scripts ou reportar problemas:
 
-| Recurso | O que é | Claude Code | opencode | agy | Codex CLI |
-|---|---|---|---|---|---|
-| [context7](https://context7.com/) | Docs de libs/frameworks sob demanda | plugin | config | `mcp add` | `mcp add` |
-| [superpowers](https://github.com/obra/superpowers) | Skills: brainstorming, TDD, debugging, planos | plugin | plugin (git) | `plugin import` ⚠️ | `plugin marketplace` ⚠️ |
-| [@modelcontextprotocol/server-github](https://github.com/modelcontextprotocol/servers) | Issues, PRs, repos, code search | `mcp add` + token/gh | config + token | `mcp add` + token/gh | `mcp add` + token/gh |
-| notion | Busca e páginas do Notion | `mcp add` + OAuth | config | `mcp add` + OAuth | `mcp add` + `mcp login` |
-| [playwright-mcp](https://github.com/microsoft/playwright-mcp) | Automação de browser (suporte a extensão) | `mcp add` | config | `mcp add` | `mcp add` |
-| [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Debug/perf do Chrome ao vivo | `mcp add` | config | `mcp add` | `mcp add` |
-| grill-me ([mattpocock/skills](https://github.com/mattpocock/skills)) | Skill de "grelhar" uma ideia antes de implementar | arquivo | universal, não verificado | universal, não verificado | arquivo, não verificado |
-| statusline (agy) | Barra inferior essencial (branch, modelo, effort, ctx%, quota) | - | - | script nativo (`scripts/statusline.sh`) | - |
+1. Consulte o nosso **[Guia de Contribuição](CONTRIBUTING.md)**.
+2. Execute `make check` para validar sintaxe e JSONs.
+3. Abra uma [Issue](https://github.com/DevJoaoLopes/workstation-devjoaolopes/issues) ou envie um Pull Request.
 
-⚠️ = experimental nesta versão — o mecanismo existe mas não foi validado
-ponta a ponta ainda. Veja `mcps-generation.json` (campo `status`) e o spec em
-`docs/superpowers/specs/2026-08-22-repo-template-architecture-design.md`
-pros detalhes e os fallbacks de cada um.
+---
 
-`chrome-devtools-mcp` exige o Google Chrome instalado — não tem como o
-bootstrap resolver isso, é pré-requisito de máquina.
+<div align="center">
 
-### Skills do mattpocock/skills (`grill-me`)
+Desenvolvido por **[João Victor Lopes (DevJoaoLopes)](https://github.com/DevJoaoLopes)** • Distribuído sob a **[Licença MIT](LICENSE)**
 
-`grill-me` é só um atalho — o `SKILL.md` dele literalmente diz "Call the
-Skill tool with 'grilling'". Por isso as duas skills (`grill-me` e
-`grilling`) estão vendorizadas juntas em `.agents/skills/`; instalar só a
-primeira deixa o atalho quebrado.
-
-Pra trazer outra skill do mesmo pacote ou atualizar as existentes:
-
-```bash
-# nome da skill com ESPAÇO antes, não '=' — em modo agente
-# `--skill=nome` é ignorado e instala as 36 skills do pacote inteiro
-npx skills@latest add mattpocock/skills --skill nome-da-skill -y
-
-# atualizar as já instaladas (usa o skills-lock.json)
-npx skills@latest update
-```
-
-O instalador cria os arquivos reais em `.agents/skills/<nome>/` (convenção
-cross-tool dele) e um symlink de conveniência em `.claude/skills/<nome>/`
-pra esse próprio repositório — os `setup-*.sh` symlinkam a partir de
-`.agents/skills/` pros diretórios globais de cada ferramenta.
-
-## Como adicionar uma ferramenta nova
-
-1. Adicione uma entrada em `mcps-generation.json` (`mcpServers` ou
-   `pluginsAndSkills`) com a descrição, transporte/auth e o método de
-   instalação por ferramenta.
-2. Reflita isso no `scripts/setup-<ferramenta>.sh` correspondente — prefira
-   sempre o CLI nativo da ferramenta (`<tool> mcp add`, `<tool> plugin
-   install`) a editar um arquivo de config à mão. Só edite arquivo
-   diretamente quando esse for o próprio mecanismo nativo da ferramenta (caso
-   do opencode).
-3. Atualize a tabela de inventário acima.
-4. Rode o `setup-*.sh` da ferramenta afetada pra validar antes de commitar.
-
-## Secrets
-
-- **GitHub Token**: Os scripts tentam resolver automaticamente o token a partir da sessão local ativa do `gh` (`gh auth token`). Se não houver `gh` autenticado, defina `GITHUB_PERSONAL_ACCESS_TOKEN` no `.env`.
-- **Playwright Extension**: Para conectar o Playwright MCP à aba ativa do navegador Chrome/Edge, configure `PLAYWRIGHT_MCP_EXTENSION_TOKEN` no `.env`.
-- **OAuth (Notion)**: O login OAuth abre o navegador na primeira execução de cada ferramenta.
-
-- `.env` nunca é commitado (está no `.gitignore`).
-- Nenhum script grava token em texto plano fora do `.env`.
-- Nenhum segredo de conta (OAuth tokens, sessões) é versionado — eles vivem
-  no keychain/estado interno de cada ferramenta, fora deste repo.
-
-## Status por ferramenta
-
-- **Claude Code** — sólido. Todos os MCPs e plugins listados já rodam com suporte a stdio GitHub e Playwright com extensão.
-- **opencode** — configurado via `home/.config/opencode/opencode.json` com variáveis interpoladas do ambiente.
-- **Codex CLI** — comandos (`codex mcp add`, `codex plugin marketplace add/add`) configurados com suporte a token do GitHub.
-- **agy** — MCPs configurados, suporte a extensão do Playwright e statusline customizada mínima integrada via `scripts/statusline.sh`.
-
-## Fora de escopo (por enquanto)
-
-- Agents/subagents customizados — havia um pacote genérico de 13 subagents
-  duplicado em `.claude/`, `.codex/` e `.copilot/` que foi removido; decidir
-  se volta curado ou fica de fora é uma decisão separada.
-- Conectores de conta do Claude.ai (não são arquivo).
+</div>

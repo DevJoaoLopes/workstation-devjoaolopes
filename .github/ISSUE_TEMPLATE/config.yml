@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Dúvidas Gerais e Discussões
+    url: https://github.com/DevJoaoLopes/workstation-devjoaolopes/discussions
+    about: Faça perguntas e troque ideias sobre o setup de IA com outros desenvolvedores.
+  - name: 📖 Documentação do Repositório
+    url: https://github.com/DevJoaoLopes/workstation-devjoaolopes/blob/main/README.md
+    about: Consulte o guia de instalação, catálogo de MCPs e solução de problemas.

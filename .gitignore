@@ -1,16 +1,20 @@
 # Segredos — nunca commitar
 .env
 
+# Python
+__pycache__/
+*.py[cod]
+
 # Artefatos de ferramentas Node (ex.: `npx skills add`)
 node_modules/
 package-lock.json
 
 # SO
 .DS_Store
+Thumbs.db
 
 # Backups criados pelo bootstrap ao substituir arquivo existente por symlink
 *.bak
 
 # Playwright MCP runtime artifacts
 .playwright-mcp/
-

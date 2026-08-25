@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, 'feat/**' ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    name: Validation & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate JSON Files
+        run: |
+          echo "Validating JSON files..."
+          python3 -c "
+          import os, json, sys
+          errors = 0
+          for root, dirs, files in os.walk('.'):
+              if '.git' in root or 'node_modules' in root:
+                  continue
+              for f in files:
+                  if f.endswith('.json'):
+                      p = os.path.join(root, f)
+                      try:
+                          with open(p, 'r', encoding='utf-8') as fp:
+                              json.load(fp)
+                          print(f'✅ {p}')
+                      except Exception as e:
+                          print(f'❌ {p}: {e}', file=sys.stderr)
+                          errors += 1
+          if errors > 0:
+              sys.exit(1)
+          "
+
+      - name: Validate Shell Script Syntax
+        run: |
+          echo "Validating Bash scripts..."
+          shopt -s globstar nullglob
+          for script in scripts/**/*.sh scripts/*.sh; do
+            if [ -f "$script" ]; then
+              bash -n "$script"
+              echo "✅ $script"
+            fi
+          done
