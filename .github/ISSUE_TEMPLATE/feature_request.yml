@@ -1,0 +1,48 @@
+name: 💡 Sugestão de Feature / Novo MCP
+description: Sugira um novo MCP Server, plugin, skill ou melhoria nos scripts.
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tem uma ideia para melhorar o workstation ou adicionar um novo MCP Server/Skill? Conte-nos mais!
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Categoria da Sugestão
+      options:
+        - Novo MCP Server
+        - Novo Plugin / Skill
+        - Suporte a Nova CLI / Ferramenta de IA
+        - Automação / Scripts
+        - Documentação
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição da Proposta
+      description: Explique o que é a ferramenta/ideia e qual problema ela resolve.
+      placeholder: Sugiro adicionar o MCP Server X para permitir consulta direta a...
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Benefícios para o Workstation de IA
+      description: Por que essa adição é valiosa no fluxo de desenvolvimento?
+      placeholder: Permite que os agentes acessem rapidamente a documentação de...
+    validations:
+      required: false
+
+  - type: input
+    id: upstream_link
+    attributes:
+      label: Link do Repositório / Documentação Upstream
+      placeholder: https://github.com/exemplo/exemplo-mcp
+    validations:
+      required: false

@@ -1,0 +1,66 @@
+name: 🐛 Relato de Bug
+description: Reporte um erro, falha de script ou incompatibilidade no workstation.
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar um problema! Por favor, preencha as informações abaixo para nos ajudar a identificar e corrigir o erro rapidamente.
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Ferramenta Afetada
+      description: Em qual ferramenta de IA ou componente o erro ocorreu?
+      options:
+        - Claude Code
+        - opencode
+        - Antigravity CLI (agy)
+        - Codex CLI
+        - Bootstrap / Scripts em geral
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Sistema Operacional
+      description: Qual sistema você está utilizando?
+      options:
+        - macOS (Apple Silicon - M1/M2/M3/M4)
+        - macOS (Intel)
+        - Linux (Ubuntu/Debian)
+        - Linux (Arch/Fedora/Outro)
+        - WSL2 (Windows)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Comportamento
+      description: Explique o que aconteceu de forma clara e objetiva.
+      placeholder: Ao executar ./scripts/bootstrap.sh, o setup do Claude Code falhou com...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para Reproduzir
+      description: Quais comandos você executou?
+      placeholder: |
+        1. Clonei o repositório
+        2. Executei `./scripts/bootstrap.sh`
+        3. Observei o erro X...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Saída do Terminal
+      description: Cole a saída do terminal com o erro (se houver).
+      render: shell
