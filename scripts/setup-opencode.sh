@@ -2,7 +2,7 @@
 # Configura o opencode a partir deste repositório.
 #
 # opencode não tem CLI de configuração — o próprio opencode.json hand-authored
-# É o mecanismo nativo de config, então aqui só symlinkamos o arquivo.
+# é o mecanismo nativo de config, então aqui symlinkamos o arquivo.
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -22,4 +22,3 @@ if [ -f "$jsonc" ] && [ ! -L "$jsonc" ]; then
 fi
 
 log "opencode configurado."
-log "github usa oauth:true agora (migrado de PAT) — confirme o login na primeira chamada ao MCP; se falhar, preencha GITHUB_PERSONAL_ACCESS_TOKEN no .env como fallback e adicione o header de volta no opencode.json."

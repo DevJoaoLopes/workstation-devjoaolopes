@@ -84,11 +84,12 @@ caminho de destino antes de substituir.
 |---|---|---|---|---|---|
 | [context7](https://context7.com/) | Docs de libs/frameworks sob demanda | plugin | config | `mcp add` | `mcp add` |
 | [superpowers](https://github.com/obra/superpowers) | Skills: brainstorming, TDD, debugging, planos | plugin | plugin (git) | `plugin import` ⚠️ | `plugin marketplace` ⚠️ |
-| [github-mcp-server](https://github.com/github/github-mcp-server) | Issues, PRs, code search | `mcp add` + OAuth | config + OAuth | `mcp add` | `mcp add` + `mcp login` |
-| notion | Busca e páginas do Notion | `mcp add` + OAuth | config | `mcp add` | `mcp add` + `mcp login` |
-| [playwright-mcp](https://github.com/microsoft/playwright-mcp) | Automação de browser | `mcp add` | config | `mcp add` | `mcp add` |
+| [@modelcontextprotocol/server-github](https://github.com/modelcontextprotocol/servers) | Issues, PRs, repos, code search | `mcp add` + token/gh | config + token | `mcp add` + token/gh | `mcp add` + token/gh |
+| notion | Busca e páginas do Notion | `mcp add` + OAuth | config | `mcp add` + OAuth | `mcp add` + `mcp login` |
+| [playwright-mcp](https://github.com/microsoft/playwright-mcp) | Automação de browser (suporte a extensão) | `mcp add` | config | `mcp add` | `mcp add` |
 | [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Debug/perf do Chrome ao vivo | `mcp add` | config | `mcp add` | `mcp add` |
 | grill-me ([mattpocock/skills](https://github.com/mattpocock/skills)) | Skill de "grelhar" uma ideia antes de implementar | arquivo | universal, não verificado | universal, não verificado | arquivo, não verificado |
+| statusline (agy) | Barra inferior essencial (branch, modelo, effort, ctx%, quota) | - | - | script nativo (`scripts/statusline.sh`) | - |
 
 ⚠️ = experimental nesta versão — o mecanismo existe mas não foi validado
 ponta a ponta ainda. Veja `mcps-generation.json` (campo `status`) e o spec em
@@ -136,10 +137,9 @@ pra esse próprio repositório — os `setup-*.sh` symlinkam a partir de
 
 ## Secrets
 
-Princípio: **OAuth sempre que a ferramenta suportar**. Token em variável de
-ambiente é só o fallback documentado onde não há OAuth. Hoje isso é apenas o
-`GITHUB_PERSONAL_ACCESS_TOKEN` opcional em `.env.example`, usado só se o
-`oauth: true` do MCP do github no opencode não funcionar nessa máquina.
+- **GitHub Token**: Os scripts tentam resolver automaticamente o token a partir da sessão local ativa do `gh` (`gh auth token`). Se não houver `gh` autenticado, defina `GITHUB_PERSONAL_ACCESS_TOKEN` no `.env`.
+- **Playwright Extension**: Para conectar o Playwright MCP à aba ativa do navegador Chrome/Edge, configure `PLAYWRIGHT_MCP_EXTENSION_TOKEN` no `.env`.
+- **OAuth (Notion)**: O login OAuth abre o navegador na primeira execução de cada ferramenta.
 
 - `.env` nunca é commitado (está no `.gitignore`).
 - Nenhum script grava token em texto plano fora do `.env`.
@@ -148,19 +148,10 @@ ambiente é só o fallback documentado onde não há OAuth. Hoje isso é apenas 
 
 ## Status por ferramenta
 
-- **Claude Code** — sólido. Todos os MCPs e plugins listados já rodavam ou
-  foram adicionados via CLI testada (`claude mcp add --help` / `claude
-  plugin install --help` conferidos nesta máquina).
-- **opencode** — sólido, mas a migração do `github` de PAT pra `oauth: true`
-  precisa ser confirmada na primeira execução real.
-- **Codex CLI** — comandos (`codex mcp add/login`, `codex plugin
-  marketplace add/add`) confirmados via `--help` no binário real desta
-  máquina; a instalação da `superpowers` via marketplace git de terceiro é o
-  ponto menos testado. Exige o CLI standalone instalado (ver Quick start) —
-  o binário embutido na extensão do VS Code não conta.
-- **agy** — era a ferramenta mais "de fábrica" (zero customização) antes
-  deste repo; os MCPs via `agy mcp add` são diretos, mas a `superpowers` via
-  `agy plugin import claude` é experimental.
+- **Claude Code** — sólido. Todos os MCPs e plugins listados já rodam com suporte a stdio GitHub e Playwright com extensão.
+- **opencode** — configurado via `home/.config/opencode/opencode.json` com variáveis interpoladas do ambiente.
+- **Codex CLI** — comandos (`codex mcp add`, `codex plugin marketplace add/add`) configurados com suporte a token do GitHub.
+- **agy** — MCPs configurados, suporte a extensão do Playwright e statusline customizada mínima integrada via `scripts/statusline.sh`.
 
 ## Fora de escopo (por enquanto)
 

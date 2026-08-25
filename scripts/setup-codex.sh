@@ -14,14 +14,23 @@ log "Configurando Codex CLI..."
 
 try "mcp context7" codex mcp add context7 --url https://mcp.context7.com/mcp
 
-try "mcp github" codex mcp add github --url https://api.githubcopilot.com/mcp
-try "login github (oauth)" codex mcp login github
+gh_token="$(get_github_token)"
+if [ -n "$gh_token" ]; then
+  try "mcp github" codex mcp add github --env "GITHUB_PERSONAL_ACCESS_TOKEN=$gh_token" -- npx -y @modelcontextprotocol/server-github
+else
+  warn "GITHUB_PERSONAL_ACCESS_TOKEN não definido e 'gh auth token' indisponível — configure o token para o mcp github"
+fi
 
 try "mcp notion" codex mcp add notion --url https://mcp.notion.com/mcp
 try "login notion (oauth)" codex mcp login notion
 
-try "mcp playwright"      codex mcp add playwright -- npx @playwright/mcp@latest
-try "mcp chrome-devtools" codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest
+if [ -n "${PLAYWRIGHT_MCP_EXTENSION_TOKEN:-}" ]; then
+  try "mcp playwright (extension)" codex mcp add playwright --env "PLAYWRIGHT_MCP_EXTENSION_TOKEN=$PLAYWRIGHT_MCP_EXTENSION_TOKEN" -- npx -y @playwright/mcp@latest --extension
+else
+  try "mcp playwright" codex mcp add playwright -- npx -y @playwright/mcp@latest
+fi
+
+try "mcp chrome-devtools" codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
 
 # Superpowers: a superpowers já publica um manifesto .codex-plugin, mas a
 # sintaxe exata de `plugin marketplace add` pra um repo git de terceiro não

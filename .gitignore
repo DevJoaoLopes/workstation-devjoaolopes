@@ -10,3 +10,7 @@ package-lock.json
 
 # Backups criados pelo bootstrap ao substituir arquivo existente por symlink
 *.bak
+
+# Playwright MCP runtime artifacts
+.playwright-mcp/
+

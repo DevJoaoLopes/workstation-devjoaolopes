@@ -30,7 +30,6 @@ link_file() {
   log "linkado $dest -> $src"
 }
 
-# try <descrição> <comando...>
 # Roda um comando de setup sem derrubar o script inteiro se falhar (ex.:
 # recurso já configurado antes). Sempre avisa em caso de falha.
 try() {
@@ -41,3 +40,15 @@ try() {
     warn "falhou (pode já estar configurado): $desc"
   fi
 }
+
+# get_github_token
+# Retorna o token do GitHub a partir de GITHUB_PERSONAL_ACCESS_TOKEN ou do `gh auth token`
+get_github_token() {
+  if [ -n "${GITHUB_PERSONAL_ACCESS_TOKEN:-}" ]; then
+    echo "$GITHUB_PERSONAL_ACCESS_TOKEN"
+  elif has_cmd gh; then
+    gh auth token 2>/dev/null || true
+  fi
+}
+
+

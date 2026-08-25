@@ -18,10 +18,22 @@ for plugin in ralph-loop code-review frontend-design superpowers context7 featur
 done
 
 # MCP servers que não vêm embutidos em nenhum plugin (escopo "user" = global)
-try "mcp github"          claude mcp add --transport http -s user github https://api.githubcopilot.com/mcp
-try "mcp notion"          claude mcp add --transport http -s user notion https://mcp.notion.com/mcp
-try "mcp playwright"      claude mcp add -s user playwright -- npx @playwright/mcp@latest
-try "mcp chrome-devtools" claude mcp add -s user chrome-devtools -- npx chrome-devtools-mcp@latest
+gh_token="$(get_github_token)"
+if [ -n "$gh_token" ]; then
+  try "mcp github" claude mcp add -s user github -e "GITHUB_PERSONAL_ACCESS_TOKEN=$gh_token" -- npx -y @modelcontextprotocol/server-github
+else
+  warn "GITHUB_PERSONAL_ACCESS_TOKEN não definido e 'gh auth token' indisponível — configure o token para o mcp github"
+fi
+
+try "mcp notion" claude mcp add --transport http -s user notion https://mcp.notion.com/mcp
+
+if [ -n "${PLAYWRIGHT_MCP_EXTENSION_TOKEN:-}" ]; then
+  try "mcp playwright (extension)" claude mcp add -s user playwright -e "PLAYWRIGHT_MCP_EXTENSION_TOKEN=$PLAYWRIGHT_MCP_EXTENSION_TOKEN" -- npx -y @playwright/mcp@latest --extension
+else
+  try "mcp playwright" claude mcp add -s user playwright -- npx -y @playwright/mcp@latest
+fi
+
+try "mcp chrome-devtools" claude mcp add -s user chrome-devtools -- npx -y chrome-devtools-mcp@latest
 
 # Skills avulsas (mattpocock/skills), já vendorizadas em .agents/skills/ —
 # ver "Como atualizar a skill grill-me" no README pra trazer versões novas.
@@ -31,4 +43,3 @@ link_file ".agents/skills/grill-me" "$HOME/.claude/skills/grill-me"
 link_file ".agents/skills/grilling" "$HOME/.claude/skills/grilling"
 
 log "Claude Code configurado."
-log "github e notion pedem login OAuth no navegador na primeira vez que forem usados numa sessão."

@@ -1,6 +1,6 @@
 {
   "$comment": "Manifesto canônico de MCP servers, plugins e skills usados neste workstation. Fonte de verdade humana e para agentes: ao adicionar uma ferramenta nova, crie a entrada aqui primeiro e depois reflita em scripts/setup-*.sh e na tabela do README.",
-  "updated": "2026-08-22",
+  "updated": "2026-08-24",
   "mcpServers": [
     {
       "name": "context7",
@@ -11,8 +11,8 @@
       "auth": "none",
       "tools": {
         "claude-code": { "method": "plugin", "ref": "context7@claude-plugins-official", "status": "installed" },
-        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.context7", "status": "new" },
-        "agy": { "method": "cli", "cmd": "agy mcp add context7 --type http https://mcp.context7.com/mcp", "status": "new" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.context7", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add context7 --type http https://mcp.context7.com/mcp", "status": "installed" },
         "codex": { "method": "cli", "cmd": "codex mcp add context7 --url https://mcp.context7.com/mcp", "status": "new" }
       }
     },
@@ -20,14 +20,14 @@
       "name": "github",
       "description": "GitHub MCP server oficial — issues, PRs, repos, code search",
       "source": "https://github.com/github/github-mcp-server",
-      "transport": "http",
-      "url": "https://api.githubcopilot.com/mcp",
-      "auth": "oauth",
+      "transport": "stdio",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "auth": "token (GITHUB_PERSONAL_ACCESS_TOKEN ou gh auth token automático)",
       "tools": {
-        "claude-code": { "method": "cli", "cmd": "claude mcp add --transport http -s user github https://api.githubcopilot.com/mcp", "status": "installed" },
-        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.github", "note": "migrado de PAT (header Authorization) para oauth:true — validar login na primeira execução", "status": "changed" },
-        "agy": { "method": "cli", "cmd": "agy mcp add --type http github https://api.githubcopilot.com/mcp", "status": "new" },
-        "codex": { "method": "cli", "cmd": "codex mcp add github --url https://api.githubcopilot.com/mcp && codex mcp login github", "status": "new" }
+        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user github -e GITHUB_PERSONAL_ACCESS_TOKEN=\"$(get_github_token)\" -- npx -y @modelcontextprotocol/server-github", "status": "installed" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.github", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add --env GITHUB_PERSONAL_ACCESS_TOKEN=\"$(get_github_token)\" github npx -y @modelcontextprotocol/server-github", "status": "installed" },
+        "codex": { "method": "cli", "cmd": "codex mcp add github --env GITHUB_PERSONAL_ACCESS_TOKEN=\"$(get_github_token)\" -- npx -y @modelcontextprotocol/server-github", "status": "new" }
       }
     },
     {
@@ -40,23 +40,23 @@
       "tools": {
         "claude-code": { "method": "cli", "cmd": "claude mcp add --transport http -s user notion https://mcp.notion.com/mcp", "status": "installed" },
         "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.notion", "status": "installed" },
-        "agy": { "method": "cli", "cmd": "agy mcp add --type http notion https://mcp.notion.com/mcp", "status": "new" },
+        "agy": { "method": "cli", "cmd": "agy mcp add --type http notion https://mcp.notion.com/mcp", "status": "installed" },
         "codex": { "method": "cli", "cmd": "codex mcp add notion --url https://mcp.notion.com/mcp && codex mcp login notion", "status": "new" }
       },
       "note": "Não estava na lista original desta rodada; mantido como carry-over do setup anterior."
     },
     {
       "name": "playwright",
-      "description": "Automação de browser via Playwright (oficial Microsoft)",
+      "description": "Automação de browser via Playwright (oficial Microsoft), com suporte a extensão de navegador",
       "source": "https://github.com/microsoft/playwright-mcp",
       "transport": "stdio",
-      "command": ["npx", "@playwright/mcp@latest"],
-      "auth": "none",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "auth": "opcional (PLAYWRIGHT_MCP_EXTENSION_TOKEN para conectar à janela ativa)",
       "tools": {
-        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user playwright -- npx @playwright/mcp@latest", "status": "new" },
+        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user playwright -- npx -y @playwright/mcp@latest", "status": "installed" },
         "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.playwright", "status": "installed" },
-        "agy": { "method": "cli", "cmd": "agy mcp add playwright npx @playwright/mcp@latest", "status": "new" },
-        "codex": { "method": "cli", "cmd": "codex mcp add playwright -- npx @playwright/mcp@latest", "status": "new" }
+        "agy": { "method": "cli", "cmd": "agy mcp add playwright npx -y @playwright/mcp@latest", "status": "installed" },
+        "codex": { "method": "cli", "cmd": "codex mcp add playwright -- npx -y @playwright/mcp@latest", "status": "new" }
       }
     },
     {
@@ -64,14 +64,14 @@
       "description": "Controle e inspeção de Chrome ao vivo — performance, console, network",
       "source": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
       "transport": "stdio",
-      "command": ["npx", "chrome-devtools-mcp@latest"],
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
       "auth": "none",
       "prerequisites": ["Google Chrome instalado (versão estável atual ou mais nova)"],
       "tools": {
-        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user chrome-devtools -- npx chrome-devtools-mcp@latest", "status": "new" },
-        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.chrome-devtools", "status": "new" },
-        "agy": { "method": "cli", "cmd": "agy mcp add chrome-devtools npx chrome-devtools-mcp@latest", "status": "new" },
-        "codex": { "method": "cli", "cmd": "codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest", "status": "new" }
+        "claude-code": { "method": "cli", "cmd": "claude mcp add -s user chrome-devtools -- npx -y chrome-devtools-mcp@latest", "status": "installed" },
+        "opencode": { "method": "config", "path": "home/.config/opencode/opencode.json#mcp.chrome-devtools", "status": "installed" },
+        "agy": { "method": "cli", "cmd": "agy mcp add chrome-devtools npx -y chrome-devtools-mcp@latest", "status": "installed" },
+        "codex": { "method": "cli", "cmd": "codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest", "status": "new" }
       }
     }
   ],
