@@ -36,7 +36,7 @@ try "mcp chrome-devtools" codex mcp add chrome-devtools -- npx -y chrome-devtool
 # marketplace) — `codex plugin marketplace add superpowers <url>` falha com
 # "unexpected argument". O nome da marketplace também não é "superpowers":
 # o repo obra/superpowers registra a marketplace como "superpowers-dev".
-try "marketplace add superpowers" codex plugin marketplace add https://github.com/obra/superpowers
+try "marketplace add obra/superpowers" codex plugin marketplace add "https://github.com/obra/superpowers"
 try "plugin add superpowers"      codex plugin add superpowers@superpowers-dev
 
 # Skills avulsas (mattpocock/skills), vendorizadas em .agents/skills/.
