@@ -32,12 +32,12 @@ fi
 
 try "mcp chrome-devtools" codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
 
-# Superpowers: a superpowers já publica um manifesto .codex-plugin, mas a
-# sintaxe exata de `plugin marketplace add` pra um repo git de terceiro não
-# foi validada linha a linha — trate como experimental.
-warn "superpowers no codex é experimental — validar sintaxe de 'plugin marketplace add' se falhar"
-try "marketplace add superpowers" codex plugin marketplace add superpowers https://github.com/obra/superpowers
-try "plugin add superpowers"      codex plugin add superpowers@superpowers
+# Superpowers: `plugin marketplace add` aceita só a fonte (sem nome de
+# marketplace) — `codex plugin marketplace add superpowers <url>` falha com
+# "unexpected argument". O nome da marketplace também não é "superpowers":
+# o repo obra/superpowers registra a marketplace como "superpowers-dev".
+try "marketplace add obra/superpowers" codex plugin marketplace add "https://github.com/obra/superpowers"
+try "plugin add superpowers"      codex plugin add superpowers@superpowers-dev
 
 # Skills avulsas (mattpocock/skills), vendorizadas em .agents/skills/.
 # ~/.codex/skills/ existe e aceita skills do usuário; a descoberta automática
